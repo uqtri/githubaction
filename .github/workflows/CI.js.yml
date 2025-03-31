@@ -47,7 +47,7 @@ jobs:
       - name: setup ssh
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_SECRET_KEY }}" > ~/.ssh/id_rsa
           chmod -R 770 ~/.ssh
           ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
       - name: copy dist folder to remote server
