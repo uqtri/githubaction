@@ -51,7 +51,10 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod -R 700 ~/.ssh
           ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
-        
+      - name: Check downloaded files
+        run: |
+          ls -lah
+          ls
       - name: copy dist folder to remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn rm -rf ~/doctruyen-fe/dist
