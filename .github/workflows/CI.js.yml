@@ -19,20 +19,52 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - name: compress dist folder
+      run: |
+        tar -czf dist.zip dist/    
+    - name: upload dist folder to artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist.zip
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build] 
+    env:
+      SSH_PRIVATE_KEY: ${{secrets.SSH_SECRET_KEY }}  
+    steps:
+      - name: Download dist folder from artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
-      - name: compress dist folder
+          name: dist
+      - name: setup ssh
         run: |
-          tar -czf dist.tar.gz dist/
-      - name: upload dist folder to artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-folder
-          path: ./dist.tar.gz
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod -R 700 ~/.ssh
+          ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
+      - name: Check downloaded files
+        run: |
+          ls -lah
+          ls
+      - name: copy dist folder to remote server
+        run: |
+          ssh triuq@sitedoctruyen.id.vn rm -rf ~/doctruyen-fe/dist
+          scp -i ~/.ssh/id_rsa dist.zip triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
+      - name: build and deploy in remote server
+        run: |
+          ssh triuq@sitedoctruyen.id.vn << 'EOF'
+          cd ~/doctruyen-fe
+          tar -xzf ./dist.zip 
+          rm -rf dist.zip
+          sudo systemctl restart nginx
+          EOF
+            
