@@ -66,4 +66,5 @@ jobs:
           tar -xzf ./dist.zip 
           rm -rf dist.zip
           sudo systemctl restart nginx
+          EOF
             
