@@ -55,13 +55,13 @@ jobs:
         
       - name: copy dist folder to remote server
         run: |
-          ssh triuq@sitedoctruyen.id.vn rm -r ~/doctruyen-fe/dist
+          ssh triuq@sitedoctruyen.id.vn rm -rf ~/doctruyen-fe/dist
           scp -i ~/.ssh/id_rsa dist.gzip triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
       - name: build and deploy in remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn << 'EOF'
           cd ~/doctruyen-fe
           tar -xzf ./dist.zip 
-          rm -r dist.zip
+          rm -rf dist.zip
           sudo systemctl restart nginx
             
