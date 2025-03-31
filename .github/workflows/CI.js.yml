@@ -30,10 +30,10 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
     - name: compress dist folder
-    - run: |
+      run: |
         tar -czf dist.tar.gz dist/    
     - name: upload dist folder to artifact
-    - uses: actions/upload-artifact@v4
-    - with:
+      uses: actions/upload-artifact@v4
+      with:
         name: dist-folder
         path: ./dist.tar.gz
