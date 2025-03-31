@@ -27,8 +27,8 @@ jobs:
         run: |
           ssh triuq@sitedoctruyen.id.vn << 'EOF'
           cd ~/doctruyen-fe
-          tar -xzf ./dist.tar.gz 
-          rm dist.tar.gz
+          tar -xzf ./dist-folder.zip 
+          rm dist.zip
           sudo systemctl restart nginx
           
       
