@@ -28,7 +28,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - name: compress dist folder
+    # - name: compress dist folder
       # run: |
       #   tar -czf dist.tar.gz dist/    
     - name: upload dist folder to artifact
