@@ -33,7 +33,7 @@ jobs:
     - name: upload dist folder to artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dist-folder
+        name: dist
         path: dist
   deploy:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Download dist folder from artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-folder
+          name: dist
           path: dist
       - name: setup ssh
         run: |
@@ -52,13 +52,13 @@ jobs:
           ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
       - name: copy dist folder to remote server
         run: |
-          ssh triuq@sitedoctruyen.id.vn rm ~/doctruyen-fe/dist.tar.gz
-          scp -i ~/.ssh/id_rsa dist.tar.gz triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
+          ssh triuq@sitedoctruyen.id.vn rm -r ~/doctruyen-fe/dist
+          scp -i ~/.ssh/id_rsa dist.gzip triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
       - name: build and deploy in remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn << 'EOF'
           cd ~/doctruyen-fe
-          tar -xzf ./dist-folder.zip 
-          rm dist.zip
+          tar -xzf ./dist.zip 
+          rm -r dist.zip
           sudo systemctl restart nginx
             
