@@ -1,0 +1,33 @@
+name: deployment
+on: 
+  workflow_run:
+    workflows: ["Node.js CI"]
+    types: ["completed"]
+    branches: ['production']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist folder from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-folder
+      - name: setup ssh
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod -R 770 ~/.ssh
+          ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
+      - name: copy dist folder to remote server
+        run: |
+          ssh triuq@sitedoctruyen.id.vn rm ~/doctruyen-fe/dist.tar.gz
+          scp -i ~/.ssh/id_rsa dist.tar.gz triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
+      - name: build and deploy in remote server
+        run: |
+          ssh triuq@sitedoctruyen.id.vn << 'EOF'
+          tar -xzf ./dist.tar.gz 
+          sudo systemctl restart nginx
+          
+      
+  
+  
