@@ -55,7 +55,7 @@ jobs:
       - name: copy dist folder to remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn rm -rf ~/doctruyen-fe/dist
-          scp -i ~/.ssh/id_rsa dist.gzip triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
+          scp -i ~/.ssh/id_rsa dist.zip triuq@sitedoctruyen.id.vn:/home/triuq/doctruyen-fe
       - name: build and deploy in remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn << 'EOF'
