@@ -45,9 +45,11 @@ jobs:
           name: dist
           path: dist
       - name: setup ssh
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_SECRET_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo ${{ secrets.SSH_SECRET_KEY }} > ~/.ssh/id_rsa
+          echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
           chmod -R 700 ~/.ssh
           ssh-keyscan -H sitedoctruyen.id.vn > ~/.ssh/known_hosts
         
