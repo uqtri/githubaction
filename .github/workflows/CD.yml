@@ -1,9 +1,9 @@
 name: deployment
-on: 
+on:
   workflow_run:
     workflows: ["Node.js CI"]
     types: ["completed"]
-    branches: ['production']
+    branches: ["production"]
 jobs:
   deploy:
     if: github.event.workflow_run.conclusion == 'success'
@@ -30,7 +30,3 @@ jobs:
           tar -xzf ./dist.tar.gz 
           rm dist.tar.gz
           sudo systemctl restart nginx
-          
-      
-  
-  
