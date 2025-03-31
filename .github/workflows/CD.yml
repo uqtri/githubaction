@@ -6,6 +6,7 @@ on:
     branches: ['production']
 jobs:
   deploy:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Download dist folder from artifact
@@ -25,7 +26,9 @@ jobs:
       - name: build and deploy in remote server
         run: |
           ssh triuq@sitedoctruyen.id.vn << 'EOF'
+          cd ~/doctruyen-fe
           tar -xzf ./dist.tar.gz 
+          rm dist.tar.gz
           sudo systemctl restart nginx
           
       
